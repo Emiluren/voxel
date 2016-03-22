@@ -125,12 +125,14 @@ GLuint loadBMP(const char* filename)
     {
         // If not 54 bytes read : problem
         printf("%s is not a correct BMP file\n", filename);
+        fclose(file);
         return 0;
     }
 
     if (header[0]!='B' || header[1]!='M')
     {
         printf("%s is not a correct BMP file\n", filename);
+        fclose(file);
         return 0;
     }
 
@@ -305,6 +307,9 @@ GLFWwindow* initLibraries(const char* title)
 
     glfwSetErrorCallback(errorCallback);
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     GLFWwindow* window = glfwCreateWindow(640, 480, title, NULL, NULL);
 
     if (!window)
@@ -317,6 +322,7 @@ GLFWwindow* initLibraries(const char* title)
     glfwSetKeyCallback(window, keyCallback);
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
+    glewExperimental = GL_TRUE;
     GLenum res = glewInit();
     if (res != GLEW_OK)
     {

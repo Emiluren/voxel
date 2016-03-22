@@ -27,7 +27,7 @@ private:
 
     Block*** blocks;
     unsigned int image;
-    unsigned int VBO, IBO;
+    unsigned int VAO, VBO, IBO;
     std::vector<Vertex>* mesh_builder;
     std::vector<unsigned int>* tri_builder;
 };

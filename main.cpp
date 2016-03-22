@@ -68,6 +68,12 @@ void init()
     glClearColor(0.3f, 0.3f, 1.0f, 0.0f);
     textured = new TexturedShader(initShaders("textured.vs", "textured.fs"));
 
+    // printf("test\n");
+    // GLuint vao;
+    // glGenVertexArrays(1, &vao);
+    // glBindVertexArray(vao);
+    // printf("slut\n");
+
     ChunkManager::bufferGraphicsData();
 
     dirLight.ambientIntensity = 0.2f;

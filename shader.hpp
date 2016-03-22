@@ -32,8 +32,9 @@ public:
     virtual void SetVertexData();
     virtual void StopUsing() const;
 
-protected:
     GLuint shaderID;
+
+protected:
     GLuint pos;
     GLuint wvp;
     GLuint world;

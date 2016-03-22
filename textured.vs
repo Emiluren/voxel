@@ -1,7 +1,7 @@
 #version 330
-in vec3 position;
-in vec2 vertexUV;
-in vec3 vertexNormal;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec2 vertexUV;
+layout(location = 2) in vec3 vertexNormal;
 
 uniform mat4 WVP;
 uniform mat4 world;

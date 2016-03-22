@@ -35,6 +35,8 @@ Chunk::Chunk()
     int width, height;
     image = loadPNG("stone.png", &width, &height);
     assert(image != 0);
+
+    VAO = VBO = IBO = 0;
 }
 
 Chunk::~Chunk()
@@ -94,15 +96,34 @@ void Chunk::CreateMesh(Chunk* leftChunk, Chunk* rightChunk, Chunk* frontChunk, C
 
     calculateNormals(tri_builder->data(), tri_builder->size(), mesh_builder->data(), mesh_builder->size());
 
+    glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &IBO);
+
+    glBindVertexArray(VAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, mesh_builder->size() * sizeof(Vertex),
                  mesh_builder->data(), GL_STATIC_DRAW);
 
-    glGenBuffers(1, &IBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, tri_builder->size() * sizeof(unsigned int),
                  tri_builder->data(), GL_STATIC_DRAW);
+
+    const int POS_POSITION = 0;
+    const int UV_POSITION = 1;
+    const int NORM_POSITION = 2;
+
+    glEnableVertexAttribArray(POS_POSITION);
+    glVertexAttribPointer(POS_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
+
+    glEnableVertexAttribArray(UV_POSITION);
+    glVertexAttribPointer(UV_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, uv));
+
+    glEnableVertexAttribArray(NORM_POSITION);
+    glVertexAttribPointer(NORM_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
+
+    glBindVertexArray(0);
 }
 
 void Chunk::CreateCube(int x, int y, int z, Chunk* leftChunk, Chunk* rightChunk, Chunk* frontChunk, Chunk* backChunk)
@@ -228,9 +249,13 @@ void Chunk::Render(Shader* shader)
 {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, image);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    shader->SetVertexData();
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // //shader->SetVertexData(); // WRONG
+    glUseProgram(shader->shaderID);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+
+    glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, tri_builder->size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
